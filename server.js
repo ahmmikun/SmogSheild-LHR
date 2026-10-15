@@ -125,11 +125,21 @@ app.use((req, res) => {
 
 // Run server only if executed directly (enables clean testing via import)
 if (process.argv[1] === __filename) {
-  app.listen(PORT, () => {
+  const server = app.listen(PORT, () => {
     console.log(`\n======================================================`);
     console.log(`🌫️  SmogShield-LHR Command Center active on port ${PORT}`);
     console.log(`🌐  Local URL: http://localhost:${PORT}`);
     console.log(`🤖  AI Model: ${MODEL_ID} (Strict 8B via ${PROVIDER})`);
     console.log(`======================================================\n`);
+  });
+
+  server.on("error", (err) => {
+    if (err.code === "EADDRINUSE") {
+      console.error(`\n⚠️  Port ${PORT} is currently in use by another process.`);
+      console.error(`To free port ${PORT} in PowerShell, run:`);
+      console.error(`Get-NetTCPConnection -LocalPort ${PORT} -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess | ForEach-Object { Stop-Process -Id $_ -Force }\n`);
+    } else {
+      console.error("Server error:", err);
+    }
   });
 }

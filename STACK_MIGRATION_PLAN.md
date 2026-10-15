@@ -112,7 +112,7 @@ These are findings to fix in M5 and M7. None of them have been changed yet.
 4. **`app.get("*")` catch-all** works on Express 4 but **breaks on Express 5** (path-to-regexp v8). Keep Express pinned to 4.x, or switch to `app.use((req, res) => res.sendFile(...))`.
 5. **`app.listen` runs at import time,** so `tests/route.test.js` can't import the app. Split it into `app.js` (`export const app`) and `server.js` (`app.listen`), or guard the listen with `if (process.argv[1] === __filename)`.
 6. **`^` version ranges** in `package.json` contradict the "pin exact versions" rule (CONTRIBUTING, D12). Re-pin with `--save-exact`.
-7. **Open-Meteo hour parsing** uses `new Date(timeStr).getHours()`. That reads the hour in the **server's** local timezone, which is wrong if the server isn't in PKT. Parse the hour from the string instead (`Number(timeStr.slice(11, 13))`), because the timestamps are already in `Asia/Karachi`.
+7. ~~Open-Meteo hour parsing timezone bug~~ **Retracted after testing.** Open-Meteo timestamps have no offset (`2026-10-15T06:00`), and JavaScript reads offset-less date-times as local time, so `getHours()` returns the literal hour on any server timezone. The `transformOpenMeteoData` regex is still the clearer approach.
 8. **The 500 path** returns a generic message. That's good, as long as no stack trace leaks; keep it that way.
 
 ## 6. Open Decisions (coordinator)
