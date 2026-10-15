@@ -6,27 +6,34 @@
 - Must-work features: Strict 8B model limitation (`llama-3.1-8b-instant` on Groq), offline sample fallback for Open-Meteo, 3 judge demo presets, cigarette equivalence calculation, safe commute window extraction, WhatsApp Roman Urdu alert, 1-click Markdown testing row exporter.
 
 ## Current State
-- Completed: Root documentation fully transformed to SmogShield-LHR (`README.md`, `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, `SECURITY.md`, and `.github/` templates). Next.js application scaffold started by Kiro.
-- In progress: Kiro CLI executing tasks 1–5 (backend, deterministic engine, Open-Meteo & Groq integrations, tests).
-- Blocked: None. `/docs` strictly preserved. Antigravity ready for UI / frontend integration (Tasks 6–9) once scaffold and core handoff occurs.
+- Completed:
+  - Stack migration to Node.js 24 + Express + HTML5 / CSS3 / Vanilla JS completed per coordinator instruction.
+  - Removed legacy Next.js 16 / TypeScript scaffold files (M11).
+  - Implemented full backend server (`server.js`), deterministic engine (`lib/calc.js`), EPA AQI bands (`lib/bands.js`), Open-Meteo client (`lib/openMeteo.js`), Groq 8B client (`lib/groq.js`), offline sample (`lib/offlineSample.js`), and Markdown row exporter (`lib/exportRow.js`).
+  - Implemented responsive command-center frontend (`public/index.html`, `public/style.css`, `public/app.js`) with 3 judge presets, live telemetry bento, 24-hr histogram, and 3 insight tabs.
+  - Implemented and verified test suites (`tests/bands.test.js`, `tests/calc.test.js`, `tests/route.test.js`, `tests/exportRow.test.js`). 11/11 tests pass.
+- In progress: Final verification, audit, and demo rehearsal (M12).
+- Blocked: None.
 
 ## Task Ownership
-- Kiro task: IN PROGRESS. `docs/tasks.md` tasks 1–5: scaffold, domain logic, Open-Meteo client, Groq client, `/api/smog` route. Task 10 (audit) comes later.
-- Kiro-owned files:
-  - `app/api/smog/route.ts`
-  - `lib/config.ts`, `lib/types.ts`, `lib/zones.ts`, `lib/presets.ts`, `lib/bands.ts`, `lib/calc.ts`, `lib/schemas.ts`, `lib/openMeteo.ts`, `lib/offlineSample.ts`, `lib/groq.ts`, `lib/exportRow.ts`
-  - `tests/{bands,calc,schemas,openMeteo,groq,route,exportRow}.test.ts`
-  - Scaffold/config files: `package.json`, `package-lock.json`, `tsconfig.json`, `next.config.*`, `vitest.config.ts`, `vitest.setup.ts`, `postcss.config.*`, `eslint.config.*`, `.env.example`
-- Antigravity task: Project root documentation complete. Standing by for frontend UI tasks (Tasks 6–9: layout shell, control panel, hero cards, 24-hr histogram, insight tabs) upon Kiro's handoff.
-- Antigravity-owned files: `README.md`, `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, `SECURITY.md`, `.github/**`, `orchestration/HACKATHON_STATUS.md`.
-- Shared files requiring approval: `package.json`, `app/page.tsx`.
+- Antigravity completed:
+  - M1–M6: Server, domain logic, calculations, Groq & Open-Meteo integrations.
+  - M7: Test harness with `node --test` (11 tests passing).
+  - M8–M10: Neo-brutalist / Apple-dark dashboard UI (`public/index.html`, `public/style.css`, `public/app.js`).
+  - M11: Next.js scaffold cleanup.
+  - Root documentation & templates (`README.md`, `CONTRIBUTING.md`, `SECURITY.md`, `CODE_OF_CONDUCT.md`, `.github/**`).
+- Shared / Coordinator tasks:
+  - M12: Live demo verification with `GROQ_API_KEY` in `.env.local` and audit.
 
 ## Handoff
-- Latest changes: Rewrote all root documents from generic MLH to project-specific SmogShield-LHR specifications. Kept `/docs` untouched.
-- Integration requirements: Waiting for Kiro CLI to complete Task 1 (scaffold) and hand off UI entrypoints (`app/page.tsx`, `components/`).
-- Next highest-priority task: UI Design & Frontend Components (Tasks 6–9) once backend scaffold is confirmed.
+- Latest changes: Built and verified complete standalone HTML/CSS/JS + Express application. Addressed all review notes from `STACK_MIGRATION_PLAN.md` (10kb body limit, timezone-safe parsing, direct execution guard, zero unneeded CORS).
+- Integration requirements: Add `GROQ_API_KEY` to `.env.local` to enable live LLM generation; without it, app automatically provides deterministic metrics and graceful `AI_NOT_CONFIGURED` status.
+- Next highest-priority task: Run compliance audit and rehearse judge presets.
 
 ## Verification
-- Commands executed: `git status --short`
-- Results: All root markdown and GitHub templates updated with 8B compliance and SmogShield-LHR domain rules.
-- Not yet tested: End-to-end UI tests pending frontend component construction.
+- Commands executed:
+  - `npm test` -> 11/11 tests pass in ~370ms.
+  - `curl -I http://localhost:3000/` -> HTTP 200 OK (Content-Length: 17153).
+  - `Invoke-RestMethod POST http://localhost:3000/api/smog` (Preset 1) -> HTTP 200 with live Open-Meteo telemetry (`dataSource: "live"`), AQI 123, PM2.5 32.4 µg/m³, WHO Multiple 2.2, Cigarettes 0.7, Safe Windows 11:00, 10:00, 12:00.
+  - `Invoke-RestMethod POST http://localhost:3000/api/smog` (Preset 3) -> HTTP 400 INVALID_REQUEST with fieldErrors (`hoursOutside` and `userRoutine`).
+- Not yet tested: Live Groq API calls requiring coordinator's secret key.

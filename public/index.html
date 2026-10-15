@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SmogShield-LHR — Real-Time Air Quality & AI-Driven Commute Optimizer</title>
+  <meta name="description" content="Real-time Lahore smog analytics, cigarette-equivalence calculation, and strict 8B open-weight AI commute optimizer." />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="brand-section">
+        <div class="heartbeat-dot" aria-hidden="true"></div>
+        <h1 class="brand-title">
+          SmogShield-LHR
+          <span class="brand-subtitle">Lahore Real-Time Air Command Center</span>
+        </h1>
+      </div>
+      <div class="compliance-badge mono" id="complianceBadge">
+        <span>MODEL: <strong class="accent">llama-3.1-8b-instant (8B)</strong></span>
+        <span>|</span>
+        <span>PROVIDER: <strong class="accent">Groq</strong></span>
+        <span>|</span>
+        <span>LATENCY: <strong class="accent" id="latencyDisplay">—</strong></span>
+      </div>
+    </header>
+
+    <!-- Preset Ribbon (Neo-Brutalist) -->
+    <section class="preset-ribbon" aria-label="Demo Presets">
+      <span class="preset-ribbon-label">Judge Presets:</span>
+      <button type="button" class="preset-btn" id="btnPreset1" title="Test Scenario 1: Bike student commute in Johar Town">
+        <span>Preset 1: Bike Commute</span>
+        <span class="preset-pill-tag">CRITICAL EXPOSURE</span>
+      </button>
+      <button type="button" class="preset-btn" id="btnPreset2" title="Test Scenario 2: Asthma patient / Senior citizen in Mall Road">
+        <span>Preset 2: Asthma Care</span>
+        <span class="preset-pill-tag">VULNERABLE GROUP</span>
+      </button>
+      <button type="button" class="preset-btn edge-case" id="btnPreset3" title="Test Scenario 3: Validation error boundary & empty routine">
+        <span>Preset 3: Edge-Case Test</span>
+        <span class="preset-pill-tag">ERROR BOUNDARY</span>
+      </button>
+    </section>
+
+    <!-- Main Dashboard Grid -->
+    <main class="dashboard-grid">
+      <!-- Left Column: Control Panel -->
+      <section class="control-panel" aria-label="Exposure Profile Configuration">
+        <div class="card-surface">
+          <h2 class="section-title">
+            <span>Exposure Profile</span>
+            <span style="font-size: 0.72rem; color: var(--text-dim); font-weight: normal;">Lahore Micro-Zones</span>
+          </h2>
+
+          <!-- Zone Selection -->
+          <div class="form-group" style="margin-bottom: 1rem;">
+            <label class="form-label">Meteorological Zone</label>
+            <div class="zone-pills-container" role="radiogroup" aria-label="Lahore Zones">
+              <div class="zone-pill">
+                <input type="radio" id="zone_riphah" name="zone" value="riphah_johar" checked />
+                <label for="zone_riphah">Johar Town (Riphah)</label>
+              </div>
+              <div class="zone-pill">
+                <input type="radio" id="zone_gulberg" name="zone" value="gulberg" />
+                <label for="zone_gulberg">Gulberg / Kalma</label>
+              </div>
+              <div class="zone-pill">
+                <input type="radio" id="zone_mall" name="zone" value="mall_road" />
+                <label for="zone_mall">Mall Road / Civil</label>
+              </div>
+              <div class="zone-pill">
+                <input type="radio" id="zone_dha" name="zone" value="dha" />
+                <label for="zone_dha">DHA Phase 5</label>
+              </div>
+              <div class="zone-pill" style="grid-column: span 2;">
+                <input type="radio" id="zone_shahdara" name="zone" value="shahdara" />
+                <label for="zone_shahdara">Shahdara Industrial Area</label>
+              </div>
+            </div>
+            <div class="field-error" id="errorZone"></div>
+          </div>
+
+          <!-- Exposure Mode Selection -->
+          <div class="form-group" style="margin-bottom: 1rem;">
+            <label class="form-label">Transport & Exposure Mode</label>
+            <div class="mode-cards-container" role="radiogroup" aria-label="Exposure Modes">
+              <div class="mode-card">
+                <input type="radio" id="mode_bike" name="mode" value="bike" checked />
+                <label for="mode_bike">
+                  <div class="mode-card-header">
+                    <span class="mode-icon">🏍️</span>
+                    <span class="mode-multiplier mono">1.8x</span>
+                  </div>
+                  <div class="mode-title">Motorbike</div>
+                  <div class="mode-desc">Yango / Bykea rider</div>
+                </label>
+              </div>
+              <div class="mode-card">
+                <input type="radio" id="mode_walk" name="mode" value="walk" />
+                <label for="mode_walk">
+                  <div class="mode-card-header">
+                    <span class="mode-icon">🚶</span>
+                    <span class="mode-multiplier mono">1.5x</span>
+                  </div>
+                  <div class="mode-title">Pedestrian</div>
+                  <div class="mode-desc">Outdoor walk / jog</div>
+                </label>
+              </div>
+              <div class="mode-card">
+                <input type="radio" id="mode_car" name="mode" value="car" />
+                <label for="mode_car">
+                  <div class="mode-card-header">
+                    <span class="mode-icon">🚗</span>
+                    <span class="mode-multiplier mono">0.6x</span>
+                  </div>
+                  <div class="mode-title">Sealed Car</div>
+                  <div class="mode-desc">AC recirculation</div>
+                </label>
+              </div>
+              <div class="mode-card">
+                <input type="radio" id="mode_asthma" name="mode" value="elder_asthma" />
+                <label for="mode_asthma">
+                  <div class="mode-card-header">
+                    <span class="mode-icon">🛡️</span>
+                    <span class="mode-multiplier mono">2.0x</span>
+                  </div>
+                  <div class="mode-title">Asthma / Senior</div>
+                  <div class="mode-desc">Sensitive vulnerable</div>
+                </label>
+              </div>
+            </div>
+            <div class="field-error" id="errorMode"></div>
+          </div>
+
+          <!-- Hours Outside Input -->
+          <div class="form-group" style="margin-bottom: 1rem;">
+            <label for="inputHours" class="form-label">
+              <span>Daily Outdoor Duration</span>
+              <span style="font-size: 0.75rem; color: var(--text-dim);">1 – 12 Hours</span>
+            </label>
+            <div class="slider-container">
+              <input type="range" id="inputHours" min="1" max="15" value="4" />
+              <div class="hours-display-box mono" id="hoursDisplay">4 hrs</div>
+            </div>
+            <div class="field-error" id="errorHours" role="alert"></div>
+          </div>
+
+          <!-- Routine Description Textarea -->
+          <div class="form-group" style="margin-bottom: 1.25rem;">
+            <label for="inputRoutine" class="form-label">
+              <span>Planned Commute / Routine</span>
+              <span class="char-counter mono" id="charCount">0 / 500</span>
+            </label>
+            <textarea
+              id="inputRoutine"
+              class="routine-input"
+              rows="3"
+              maxlength="500"
+              placeholder="e.g. Depart on bike for university at 8 AM, return at 2 PM, evening walk on rooftop at 6 PM"
+            ></textarea>
+            <div class="field-error" id="errorRoutine" role="alert"></div>
+          </div>
+
+          <!-- Run Analysis Button -->
+          <button type="button" class="btn-primary" id="btnRunAnalysis">
+            <span id="btnIcon">⚡</span>
+            <span id="btnText">Run AI Smog Exposure Analysis</span>
+            <div class="spinner" id="btnSpinner" style="display: none;" aria-hidden="true"></div>
+          </button>
+        </div>
+      </section>
+
+      <!-- Right Column: Telemetry & AI Intelligence -->
+      <section class="telemetry-display" aria-live="polite" aria-label="Air Quality Analysis Results">
+        <!-- Hero Bento: 3 Cards -->
+        <div class="hero-bento">
+          <!-- Card 1: Live AQI & Particulate -->
+          <div class="card-surface hero-card" id="cardAqi">
+            <div class="hero-card-header">
+              <span class="hero-card-title">Air Quality Index</span>
+              <span class="band-chip band-unhealthy mono" id="chipBand">UNHEALTHY</span>
+            </div>
+            <div>
+              <div class="hero-number mono" id="valAqi">178</div>
+              <div style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 0.25rem;">
+                PM2.5: <strong class="mono" id="valPm25" style="color: var(--text-main);">165 µg/m³</strong>
+                <span style="margin-left: 0.5rem; color: #FB923C; font-weight: 600;" id="valWho">WHO ×11.0</span>
+              </div>
+            </div>
+            <div class="secondary-metrics mono">
+              <span>PM10: <strong id="valPm10">240</strong></span>
+              <span>CO: <strong id="valCo">1450</strong></span>
+              <span>NO₂: <strong id="valNo2">62</strong></span>
+              <span id="badgeOffline" class="offline-badge" style="display: none;">OFFLINE SAMPLE</span>
+            </div>
+          </div>
+
+          <!-- Card 2: Cigarette Equivalence -->
+          <div class="card-surface hero-card" id="cardCigarettes">
+            <div class="hero-card-header">
+              <span class="hero-card-title">Cigarette Equivalence</span>
+              <span style="font-size: 1.1rem;" title="Berkeley Earth Inhalation Formula">🚬</span>
+            </div>
+            <div>
+              <div class="hero-number mono" style="color: #F87171;" id="valCigarettes">1.9</div>
+              <div style="font-size: 0.82rem; color: var(--text-muted);">
+                Equivalent Cigarettes Inhaled Today
+              </div>
+            </div>
+            <div>
+              <div class="gauge-bar-wrapper" title="Capped visually at 10 cigarettes">
+                <div class="gauge-fill" id="gaugeCigarettes" style="width: 19%;"></div>
+              </div>
+              <div class="cigs-formula-note mono">Berkeley Earth: 22 µg/m³ PM2.5 / 24h ≈ 1 Cig</div>
+            </div>
+          </div>
+
+          <!-- Card 3: Safe Commute Windows -->
+          <div class="card-surface hero-card" id="cardSafe">
+            <div class="hero-card-header">
+              <span class="hero-card-title">Safe Commute Windows</span>
+              <span style="font-size: 0.75rem; color: #34D399; font-weight: 700;">LOWEST PARTICULATE</span>
+            </div>
+            <div class="safe-slots-list" id="listSafeWindows">
+              <div class="safe-slot-pill best">
+                <span>🌟 14:00 (2:00 PM)</span>
+                <span class="mono">62 µg/m³ PM2.5</span>
+              </div>
+              <div class="safe-slot-pill">
+                <span>15:00 (3:00 PM)</span>
+                <span class="mono">64 µg/m³ PM2.5</span>
+              </div>
+              <div class="safe-slot-pill">
+                <span>13:00 (1:00 PM)</span>
+                <span class="mono">70 µg/m³ PM2.5</span>
+              </div>
+            </div>
+            <div class="spikes-muted-row mono" id="textSpikes">
+              ⚠️ Peak Spikes: 08:00 (188µg) • 21:00 (176µg)
+            </div>
+          </div>
+        </div>
+
+        <!-- 24-Hour Hourly Histogram -->
+        <div class="card-surface histogram-section">
+          <div class="histogram-header">
+            <h3 class="section-title" style="margin-bottom: 0;">24-Hour PM2.5 Hourly Distribution</h3>
+            <div class="histogram-legend mono">
+              <div class="legend-item"><div class="legend-dot" style="background: var(--band-good);"></div><span>Good</span></div>
+              <div class="legend-item"><div class="legend-dot" style="background: var(--band-moderate);"></div><span>Mod</span></div>
+              <div class="legend-item"><div class="legend-dot" style="background: var(--band-usg);"></div><span>USG</span></div>
+              <div class="legend-item"><div class="legend-dot" style="background: var(--band-unhealthy);"></div><span>Unhealthy</span></div>
+              <div class="legend-item"><div class="legend-dot" style="background: var(--band-hazardous);"></div><span>Hazardous</span></div>
+            </div>
+          </div>
+          <div class="histogram-container" id="histContainer" role="region" aria-label="24-Hour PM2.5 Histogram">
+            <!-- 24 dynamic bars rendered via JS -->
+          </div>
+          <div style="display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--text-dim);" class="mono">
+            <span>00:00 (Midnight)</span>
+            <span>06:00 (Dawn)</span>
+            <span>12:00 (Noon)</span>
+            <span>18:00 (Dusk)</span>
+            <span>23:00</span>
+          </div>
+        </div>
+
+        <!-- Insight Tabs Section -->
+        <div class="card-surface tabs-container">
+          <nav class="tab-nav" role="tablist" aria-label="Analysis Insights">
+            <button type="button" class="tab-btn active" role="tab" aria-selected="true" data-tab="tabSchedule" id="navSchedule">
+              📅 AI Schedule Optimizer
+            </button>
+            <button type="button" class="tab-btn" role="tab" aria-selected="false" data-tab="tabWhatsapp" id="navWhatsapp">
+              💬 WhatsApp Family Alert
+            </button>
+            <button type="button" class="tab-btn" role="tab" aria-selected="false" data-tab="tabExport" id="navExport">
+              📋 README Testing Row
+            </button>
+          </nav>
+
+          <!-- Tab 1: AI Schedule Optimizer -->
+          <div class="tab-pane active" id="tabSchedule" role="tabpanel" aria-labelledby="navSchedule">
+            <div id="aiSummaryBox" style="font-size: 0.85rem; color: #CBD5E1; margin-bottom: 1rem; line-height: 1.6; padding: 0.6rem 0.8rem; background: rgba(255,255,255,0.03); border-radius: 8px;">
+              Loading AI analysis...
+            </div>
+            <table class="schedule-table" aria-label="Commute Rescheduling Recommendations">
+              <thead>
+                <tr>
+                  <th>Original Slot</th>
+                  <th>Optimized Safe Window</th>
+                  <th>Reduction</th>
+                  <th>Rationale</th>
+                </tr>
+              </thead>
+              <tbody id="scheduleTableBody">
+                <!-- Rows injected dynamically -->
+              </tbody>
+            </table>
+            <div id="ventilationAdviceBox" style="margin-top: 1rem; font-size: 0.8rem; color: #94A3B8; border-left: 2px solid var(--accent); padding-left: 0.75rem;">
+              Ventilation advice...
+            </div>
+          </div>
+
+          <!-- Tab 2: WhatsApp Family Alert -->
+          <div class="tab-pane" id="tabWhatsapp" role="tabpanel" aria-labelledby="navWhatsapp">
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.5rem;">
+              Formatted in Roman Urdu with single asterisks (<code class="mono">*bold*</code>) for instant WhatsApp bolding:
+            </p>
+            <div class="pre-box-wrapper">
+              <pre class="code-display" id="whatsappAlertText">Loading alert...</pre>
+              <button type="button" class="btn-copy" id="btnCopyWhatsapp">
+                <span>📋 Copy Alert</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Tab 3: README Testing Row Exporter -->
+          <div class="tab-pane" id="tabExport" role="tabpanel" aria-labelledby="navExport">
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.5rem;">
+              Generated Markdown row formatted per Hackathon Testing & Findings specification:
+            </p>
+            <div class="pre-box-wrapper">
+              <pre class="code-display" id="exportMarkdownRow">Loading testing row...</pre>
+              <button type="button" class="btn-copy" id="btnCopyExport">
+                <span>📋 Copy Markdown Row</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer Disclaimer -->
+    <footer style="margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--border-subtle); text-align: center; font-size: 0.75rem; color: var(--text-dim);">
+      <p>⚠️ <strong>Not Medical Advice:</strong> SmogShield-LHR is a research & decision-support prototype built for Hacktoberfest Lahore 2026 (Riphah International University).</p>
+      <p style="margin-top: 0.25rem;">Runtime AI powered strictly by Meta Llama 3.1 8B (<code class="mono">llama-3.1-8b-instant</code>) via Groq Cloud API.</p>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
