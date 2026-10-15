@@ -73,8 +73,13 @@
 
           <!-- Zone Selection -->
           <div class="form-group" style="margin-bottom: 1rem;">
-            <label class="form-label">Meteorological Zone</label>
-            <div class="zone-pills-container" role="radiogroup" aria-label="Lahore Zones">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+              <label class="form-label" style="margin-bottom: 0;">Meteorological Zone</label>
+              <button type="button" class="btn-gps" id="btnGps" title="Detect your exact GPS location in Lahore">
+                <span>📍 Live GPS</span>
+              </button>
+            </div>
+            <div class="zone-pills-container" role="radiogroup" aria-label="Quick Lahore Zones">
               <div class="zone-pill">
                 <input type="radio" id="zone_riphah" name="zone" value="riphah_johar" checked />
                 <label for="zone_riphah">Johar Town (Riphah)</label>
@@ -95,6 +100,39 @@
                 <input type="radio" id="zone_shahdara" name="zone" value="shahdara" />
                 <label for="zone_shahdara">Shahdara Industrial Area</label>
               </div>
+            </div>
+            <!-- All Lahore Areas Dropdown -->
+            <div style="margin-top: 0.5rem;">
+              <select id="zoneSelect" class="zone-dropdown" aria-label="Browse All Lahore Areas">
+                <option value="">🗺️ Browse All Lahore Areas (17+)...</option>
+                <optgroup label="Central & Commercial">
+                  <option value="gulberg">Gulberg / Kalma Chowk</option>
+                  <option value="mall_road">Mall Road / Civil Lines</option>
+                  <option value="walled_city">Walled City / Anarkali / Mozang</option>
+                  <option value="garden_town">Garden Town / Barkat Market</option>
+                </optgroup>
+                <optgroup label="West & Educational Hub">
+                  <option value="riphah_johar">Johar Town / Riphah Campus</option>
+                  <option value="iqbal_town">Allama Iqbal Town / Wahdat Road</option>
+                  <option value="faisal_town">Faisal Town / Township</option>
+                  <option value="thokar">Thokar Niaz Baig / Canal Road</option>
+                </optgroup>
+                <optgroup label="East & Cantonment">
+                  <option value="dha">DHA Phase 5</option>
+                  <option value="cantt">Lahore Cantt / Saddar Bazaar</option>
+                  <option value="askari">Askari 10 & 11 / Ring Road</option>
+                </optgroup>
+                <optgroup label="North & Industrial">
+                  <option value="shahdara">Shahdara Industrial Area</option>
+                  <option value="badami_bagh">Badami Bagh / Ravi Road</option>
+                  <option value="quaid_industrial">Quaid-e-Azam Industrial Estate</option>
+                </optgroup>
+                <optgroup label="South & Suburbs">
+                  <option value="model_town">Model Town / Central Park</option>
+                  <option value="wapda_town">WAPDA Town / Valencia / Lake City</option>
+                  <option value="bahria">Bahria Town / Raiwind Road</option>
+                </optgroup>
+              </select>
             </div>
             <div class="field-error" id="errorZone"></div>
           </div>
@@ -196,7 +234,10 @@
           <!-- Card 1: Live AQI & Particulate -->
           <div class="card-surface hero-card" id="cardAqi">
             <div class="hero-card-header">
-              <span class="hero-card-title">Air Quality Index</span>
+              <div>
+                <span class="hero-card-title">Air Quality Index</span>
+                <span id="activeZoneLabel" style="display: block; font-size: 0.72rem; color: var(--text-dim); font-weight: 500;">Johar Town / Riphah Campus</span>
+              </div>
               <span class="band-chip band-unhealthy mono" id="chipBand">UNHEALTHY</span>
             </div>
             <div>

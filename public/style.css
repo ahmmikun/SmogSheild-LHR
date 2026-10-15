@@ -305,6 +305,77 @@ body {
   outline-offset: 2px;
 }
 
+/* Live GPS Button */
+.btn-gps {
+  background: rgba(59, 130, 246, 0.12);
+  border: 1px solid var(--border-subtle);
+  color: #93C5FD;
+  padding: 0.22rem 0.6rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.72rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  transition: all 0.15s ease;
+  line-height: 1;
+}
+
+.btn-gps:hover {
+  background: rgba(59, 130, 246, 0.25);
+  border-color: var(--accent);
+  box-shadow: 0 0 8px var(--accent-glow);
+  color: #FFFFFF;
+}
+
+.btn-gps.active-gps {
+  background: rgba(16, 185, 129, 0.2);
+  border-color: #10B981;
+  color: #34D399;
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.35);
+}
+
+/* Zone Dropdown (City-Wide Lahore Support) */
+.zone-dropdown {
+  width: 100%;
+  background: rgba(15, 23, 42, 0.95);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-main);
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-family: var(--font-sans);
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  appearance: auto;
+}
+
+.zone-dropdown:hover {
+  border-color: var(--border-focus);
+}
+
+.zone-dropdown:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 10px var(--accent-glow);
+}
+
+.zone-dropdown optgroup {
+  background: #0B1120;
+  color: #94A3B8;
+  font-weight: 700;
+  font-size: 0.78rem;
+  padding: 4px 0;
+}
+
+.zone-dropdown option {
+  background: #0F172A;
+  color: #F1F5F9;
+  font-weight: normal;
+  padding: 6px 10px;
+}
+
 /* Mode Cards */
 .mode-cards-container {
   display: grid;
@@ -1024,3 +1095,38 @@ pre.code-display {
 [data-theme="light"] .reduction-chip { color: #047857; }
 [data-theme="light"] .spikes-muted-row,
 [data-theme="light"] .field-error { color: #B91C1C; }
+
+/* Light theme overrides for City-Wide Lahore components */
+[data-theme="light"] .btn-gps {
+  background: rgba(37, 99, 235, 0.08);
+  border-color: rgba(37, 99, 235, 0.25);
+  color: #1D4ED8;
+}
+[data-theme="light"] .btn-gps:hover {
+  background: rgba(37, 99, 235, 0.16);
+  border-color: #2563EB;
+  color: #1E40AF;
+}
+[data-theme="light"] .btn-gps.active-gps {
+  background: rgba(16, 185, 129, 0.12);
+  border-color: #059669;
+  color: #047857;
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.25);
+}
+[data-theme="light"] .zone-dropdown {
+  background: #FFFFFF;
+  border-color: rgba(15, 23, 42, 0.15);
+  color: #0F172A;
+}
+[data-theme="light"] .zone-dropdown:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 8px rgba(37, 99, 235, 0.25);
+}
+[data-theme="light"] .zone-dropdown optgroup {
+  background: #F1F5F9;
+  color: #475569;
+}
+[data-theme="light"] .zone-dropdown option {
+  background: #FFFFFF;
+  color: #0F172A;
+}

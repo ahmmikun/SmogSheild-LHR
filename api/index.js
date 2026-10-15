@@ -19,9 +19,13 @@ export function validateSmogRequest(body) {
     return { valid: false, fieldErrors: { body: ["Request body must be a JSON object"] } };
   }
 
-  const { zone, mode, hoursOutside, userRoutine } = body;
+  const { zone, mode, hoursOutside, userRoutine, customCoords } = body;
 
-  if (!zone || !ZONES[zone]) {
+  if (zone === "custom_gps") {
+    if (!customCoords || typeof customCoords.lat !== "number" || typeof customCoords.lon !== "number") {
+      fieldErrors.zone = ["Custom GPS coordinates required (numeric lat and lon)"];
+    }
+  } else if (!zone || !ZONES[zone]) {
     fieldErrors.zone = [`Invalid zone. Must be one of: ${Object.keys(ZONES).join(", ")}`];
   }
 
@@ -60,8 +64,20 @@ app.post("/api/smog", async (req, res) => {
     });
   }
 
-  const { zone: zoneId, mode: modeId, hoursOutside, userRoutine } = req.body;
-  const zone = ZONES[zoneId];
+  const { zone: zoneId, mode: modeId, hoursOutside, userRoutine, customCoords, customLabel } = req.body;
+  
+  let zone;
+  if (zoneId === "custom_gps" && customCoords) {
+    zone = {
+      id: "custom_gps",
+      label: customLabel || "Live GPS Location (Lahore)",
+      lat: Number(customCoords.lat),
+      lon: Number(customCoords.lon),
+    };
+  } else {
+    zone = ZONES[zoneId];
+  }
+
   const mode = MODES[modeId];
 
   try {
@@ -94,6 +110,7 @@ app.post("/api/smog", async (req, res) => {
         latencyMs,
         dataSource,
         zone: zoneId,
+        zoneLabel: zone.label,
         generatedAt: new Date().toISOString(),
       },
     };

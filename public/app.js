@@ -91,6 +91,13 @@ const btnPreset3 = document.getElementById("btnPreset3");
 const btnCopyWhatsapp = document.getElementById("btnCopyWhatsapp");
 const btnCopyExport = document.getElementById("btnCopyExport");
 
+// City-Wide Lahore Selection & Live GPS Elements
+const btnGps = document.getElementById("btnGps");
+const zoneSelect = document.getElementById("zoneSelect");
+const zoneRadios = document.querySelectorAll('input[name="zone"]');
+const activeZoneLabel = document.getElementById("activeZoneLabel");
+let activeGpsCoords = null; // { lat, lon, label }
+
 // Live hours display
 inputHours.addEventListener("input", (e) => {
   const val = parseInt(e.target.value, 10);
@@ -142,9 +149,99 @@ function validateForm(showErrors = true) {
   return !hasError;
 }
 
-function getSelectedZone() {
+function getSelectedZonePayload() {
+  if (activeGpsCoords) {
+    return {
+      zone: "custom_gps",
+      customCoords: { lat: activeGpsCoords.lat, lon: activeGpsCoords.lon },
+      customLabel: activeGpsCoords.label,
+    };
+  }
+  if (zoneSelect && zoneSelect.value) {
+    return { zone: zoneSelect.value };
+  }
   const checked = document.querySelector('input[name="zone"]:checked');
-  return checked ? checked.value : "riphah_johar";
+  return { zone: checked ? checked.value : "riphah_johar" };
+}
+
+// Synchronize quick radio pills with extended dropdown
+zoneRadios.forEach((radio) => {
+  radio.addEventListener("change", () => {
+    if (radio.checked) {
+      activeGpsCoords = null;
+      if (btnGps) {
+        btnGps.innerHTML = `<span>📍 Live GPS</span>`;
+        btnGps.classList.remove("active-gps");
+      }
+      if (zoneSelect) {
+        zoneSelect.value = radio.value;
+      }
+    }
+  });
+});
+
+if (zoneSelect) {
+  zoneSelect.addEventListener("change", () => {
+    activeGpsCoords = null;
+    if (btnGps) {
+      btnGps.innerHTML = `<span>📍 Live GPS</span>`;
+      btnGps.classList.remove("active-gps");
+    }
+    const val = zoneSelect.value;
+    if (!val) {
+      const riphahRadio = document.getElementById("zone_riphah");
+      if (riphahRadio) riphahRadio.checked = true;
+      return;
+    }
+    const matchingRadio = document.querySelector(`input[name="zone"][value="${val}"]`);
+    if (matchingRadio) {
+      matchingRadio.checked = true;
+    } else {
+      // Extended zone selected: uncheck quick radio pills
+      zoneRadios.forEach((r) => (r.checked = false));
+    }
+  });
+}
+
+// Live GPS Location Detection
+if (btnGps) {
+  btnGps.addEventListener("click", () => {
+    if (!navigator.geolocation) {
+      alert("Geolocation is not supported by your browser. Please select an area from the menu.");
+      return;
+    }
+
+    btnGps.innerHTML = `<span>⏳ Locating...</span>`;
+    btnGps.disabled = true;
+
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const lat = Number(pos.coords.latitude.toFixed(4));
+        const lon = Number(pos.coords.longitude.toFixed(4));
+        activeGpsCoords = {
+          lat,
+          lon,
+          label: `Live GPS (${lat}, ${lon})`,
+        };
+        zoneRadios.forEach((r) => (r.checked = false));
+        if (zoneSelect) zoneSelect.value = "";
+        btnGps.innerHTML = `<span>📍 GPS Active</span>`;
+        btnGps.classList.add("active-gps");
+        btnGps.disabled = false;
+        if (activeZoneLabel) {
+          activeZoneLabel.textContent = activeGpsCoords.label;
+        }
+      },
+      (err) => {
+        console.warn("GPS lookup failed:", err.message);
+        btnGps.innerHTML = `<span>📍 Live GPS</span>`;
+        btnGps.classList.remove("active-gps");
+        btnGps.disabled = false;
+        alert("GPS location unavailable or permission denied. Please select your Lahore area from the menu.");
+      },
+      { timeout: 10000, enableHighAccuracy: true }
+    );
+  });
 }
 
 function getSelectedMode() {
@@ -168,8 +265,9 @@ async function runAnalysis(scenarioName = "Manual Simulation") {
   btnIcon.style.display = "none";
   btnSpinner.style.display = "block";
 
+  const zonePayload = getSelectedZonePayload();
   const payload = {
-    zone: getSelectedZone(),
+    ...zonePayload,
     mode: getSelectedMode(),
     hoursOutside: parseInt(inputHours.value, 10),
     userRoutine: inputRoutine.value.trim(),
@@ -220,6 +318,10 @@ function renderResults(data, requestInput) {
     latencyDisplay.textContent = `${meta.latencyMs}ms`;
   } else {
     latencyDisplay.textContent = "—";
+  }
+
+  if (activeZoneLabel && meta && meta.zoneLabel) {
+    activeZoneLabel.textContent = meta.zoneLabel;
   }
 
   // 2. AQI Hero Card
@@ -382,6 +484,12 @@ function renderExportRow(scenario, input, result, isBlocked) {
 
 // Presets
 btnPreset1.addEventListener("click", () => {
+  activeGpsCoords = null;
+  if (btnGps) {
+    btnGps.innerHTML = `<span>📍 Live GPS</span>`;
+    btnGps.classList.remove("active-gps");
+  }
+  if (zoneSelect) zoneSelect.value = "riphah_johar";
   document.getElementById("zone_riphah").checked = true;
   document.getElementById("mode_bike").checked = true;
   inputHours.value = 5;
@@ -392,6 +500,12 @@ btnPreset1.addEventListener("click", () => {
 });
 
 btnPreset2.addEventListener("click", () => {
+  activeGpsCoords = null;
+  if (btnGps) {
+    btnGps.innerHTML = `<span>📍 Live GPS</span>`;
+    btnGps.classList.remove("active-gps");
+  }
+  if (zoneSelect) zoneSelect.value = "mall_road";
   document.getElementById("zone_mall").checked = true;
   document.getElementById("mode_asthma").checked = true;
   inputHours.value = 2;
@@ -402,6 +516,12 @@ btnPreset2.addEventListener("click", () => {
 });
 
 btnPreset3.addEventListener("click", () => {
+  activeGpsCoords = null;
+  if (btnGps) {
+    btnGps.innerHTML = `<span>📍 Live GPS</span>`;
+    btnGps.classList.remove("active-gps");
+  }
+  if (zoneSelect) zoneSelect.value = "riphah_johar";
   document.getElementById("zone_riphah").checked = true;
   document.getElementById("mode_bike").checked = true;
   inputHours.value = 15;
