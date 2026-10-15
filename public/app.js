@@ -164,17 +164,52 @@ function getSelectedZonePayload() {
   return { zone: checked ? checked.value : "riphah_johar" };
 }
 
+function setGpsState(enabled, coords = null) {
+  if (enabled && coords) {
+    activeGpsCoords = coords;
+    if (btnGps) {
+      btnGps.innerHTML = `<span class="gps-dot"></span><span>Live GPS: ON</span>`;
+      btnGps.classList.add("active-gps");
+      btnGps.setAttribute("aria-checked", "true");
+      btnGps.setAttribute("title", "Live GPS is ON. Click to turn OFF.");
+    }
+    zoneRadios.forEach((r) => (r.checked = false));
+    if (zoneSelect) zoneSelect.value = "";
+    if (activeZoneLabel) {
+      activeZoneLabel.textContent = coords.label;
+    }
+  } else {
+    activeGpsCoords = null;
+    if (btnGps) {
+      btnGps.innerHTML = `<span class="gps-dot"></span><span>Live GPS: OFF</span>`;
+      btnGps.classList.remove("active-gps");
+      btnGps.setAttribute("aria-checked", "false");
+      btnGps.setAttribute("title", "Click to turn ON Live GPS Auto-Detection");
+    }
+    // Restore manual selection if nothing is currently selected
+    const checked = document.querySelector('input[name="zone"]:checked');
+    if (!checked && (!zoneSelect || !zoneSelect.value)) {
+      const riphah = document.getElementById("zone_riphah");
+      if (riphah) riphah.checked = true;
+      if (zoneSelect) zoneSelect.value = "riphah_johar";
+      if (activeZoneLabel) {
+        activeZoneLabel.textContent = "Johar Town / Riphah Campus";
+      }
+    }
+  }
+}
+
 // Synchronize quick radio pills with extended dropdown
 zoneRadios.forEach((radio) => {
   radio.addEventListener("change", () => {
     if (radio.checked) {
-      activeGpsCoords = null;
-      if (btnGps) {
-        btnGps.innerHTML = `<span>📍 Live GPS</span>`;
-        btnGps.classList.remove("active-gps");
-      }
+      setGpsState(false);
       if (zoneSelect) {
         zoneSelect.value = radio.value;
+      }
+      const label = radio.nextElementSibling ? radio.nextElementSibling.textContent.trim() : radio.value;
+      if (activeZoneLabel) {
+        activeZoneLabel.textContent = label;
       }
     }
   });
@@ -182,15 +217,12 @@ zoneRadios.forEach((radio) => {
 
 if (zoneSelect) {
   zoneSelect.addEventListener("change", () => {
-    activeGpsCoords = null;
-    if (btnGps) {
-      btnGps.innerHTML = `<span>📍 Live GPS</span>`;
-      btnGps.classList.remove("active-gps");
-    }
+    setGpsState(false);
     const val = zoneSelect.value;
     if (!val) {
       const riphahRadio = document.getElementById("zone_riphah");
       if (riphahRadio) riphahRadio.checked = true;
+      if (activeZoneLabel) activeZoneLabel.textContent = "Johar Town / Riphah Campus";
       return;
     }
     const matchingRadio = document.querySelector(`input[name="zone"][value="${val}"]`);
@@ -200,44 +232,48 @@ if (zoneSelect) {
       // Extended zone selected: uncheck quick radio pills
       zoneRadios.forEach((r) => (r.checked = false));
     }
+    const selectedOption = zoneSelect.options[zoneSelect.selectedIndex];
+    if (activeZoneLabel && selectedOption) {
+      activeZoneLabel.textContent = selectedOption.textContent.replace(/^🗺️\s*/, "").trim();
+    }
   });
 }
 
-// Live GPS Location Detection
+// Live GPS Toggle (Turn ON / OFF)
 if (btnGps) {
   btnGps.addEventListener("click", () => {
-    if (!navigator.geolocation) {
-      alert("Geolocation is not supported by your browser. Please select an area from the menu.");
+    // If Live GPS is currently ON, turn it OFF
+    if (activeGpsCoords) {
+      setGpsState(false);
       return;
     }
 
-    btnGps.innerHTML = `<span>⏳ Locating...</span>`;
+    // Otherwise, turn it ON
+    if (!navigator.geolocation) {
+      alert("Geolocation is not supported by your browser. Please select an area manually.");
+      return;
+    }
+
+    btnGps.innerHTML = `<span class="gps-dot"></span><span>⏳ Locating...</span>`;
     btnGps.disabled = true;
 
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         const lat = Number(pos.coords.latitude.toFixed(4));
         const lon = Number(pos.coords.longitude.toFixed(4));
-        activeGpsCoords = {
+        const coords = {
           lat,
           lon,
           label: `Live GPS (${lat}, ${lon})`,
         };
-        zoneRadios.forEach((r) => (r.checked = false));
-        if (zoneSelect) zoneSelect.value = "";
-        btnGps.innerHTML = `<span>📍 GPS Active</span>`;
-        btnGps.classList.add("active-gps");
         btnGps.disabled = false;
-        if (activeZoneLabel) {
-          activeZoneLabel.textContent = activeGpsCoords.label;
-        }
+        setGpsState(true, coords);
       },
       (err) => {
         console.warn("GPS lookup failed:", err.message);
-        btnGps.innerHTML = `<span>📍 Live GPS</span>`;
-        btnGps.classList.remove("active-gps");
         btnGps.disabled = false;
-        alert("GPS location unavailable or permission denied. Please select your Lahore area from the menu.");
+        setGpsState(false);
+        alert("GPS location unavailable or permission denied: " + (err.message || "") + "\nPlease select your Lahore area manually.");
       },
       { timeout: 10000, enableHighAccuracy: true }
     );
@@ -501,11 +537,7 @@ function renderExportRow(scenario, input, result, isBlocked) {
 
 // Presets
 btnPreset1.addEventListener("click", () => {
-  activeGpsCoords = null;
-  if (btnGps) {
-    btnGps.innerHTML = `<span>📍 Live GPS</span>`;
-    btnGps.classList.remove("active-gps");
-  }
+  setGpsState(false);
   if (zoneSelect) zoneSelect.value = "riphah_johar";
   document.getElementById("zone_riphah").checked = true;
   document.getElementById("mode_bike").checked = true;
@@ -517,11 +549,7 @@ btnPreset1.addEventListener("click", () => {
 });
 
 btnPreset2.addEventListener("click", () => {
-  activeGpsCoords = null;
-  if (btnGps) {
-    btnGps.innerHTML = `<span>📍 Live GPS</span>`;
-    btnGps.classList.remove("active-gps");
-  }
+  setGpsState(false);
   if (zoneSelect) zoneSelect.value = "mall_road";
   document.getElementById("zone_mall").checked = true;
   document.getElementById("mode_asthma").checked = true;
@@ -533,11 +561,7 @@ btnPreset2.addEventListener("click", () => {
 });
 
 btnPreset3.addEventListener("click", () => {
-  activeGpsCoords = null;
-  if (btnGps) {
-    btnGps.innerHTML = `<span>📍 Live GPS</span>`;
-    btnGps.classList.remove("active-gps");
-  }
+  setGpsState(false);
   if (zoneSelect) zoneSelect.value = "riphah_johar";
   document.getElementById("zone_riphah").checked = true;
   document.getElementById("mode_bike").checked = true;

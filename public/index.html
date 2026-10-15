@@ -75,8 +75,9 @@
           <div class="form-group" style="margin-bottom: 1rem;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
               <label class="form-label" style="margin-bottom: 0;">Meteorological Zone</label>
-              <button type="button" class="btn-gps" id="btnGps" title="Detect your exact GPS location in Lahore">
-                <span>📍 Live GPS</span>
+              <button type="button" class="btn-gps" id="btnGps" role="switch" aria-checked="false" title="Click to turn ON Live GPS Auto-Detection in Lahore">
+                <span class="gps-dot"></span>
+                <span id="gpsBtnText">Live GPS: OFF</span>
               </button>
             </div>
             <div class="zone-pills-container" role="radiogroup" aria-label="Quick Lahore Zones">

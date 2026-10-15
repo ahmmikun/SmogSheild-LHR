@@ -305,35 +305,56 @@ body {
   outline-offset: 2px;
 }
 
-/* Live GPS Button */
+/* Live GPS Toggle Button */
 .btn-gps {
-  background: rgba(59, 130, 246, 0.12);
+  background: rgba(15, 23, 42, 0.9);
   border: 1px solid var(--border-subtle);
-  color: #93C5FD;
-  padding: 0.22rem 0.6rem;
+  color: var(--text-muted);
+  padding: 0.25rem 0.65rem;
   border-radius: var(--radius-pill);
   font-size: 0.72rem;
   font-weight: 600;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
-  gap: 0.25rem;
-  transition: all 0.15s ease;
+  gap: 0.4rem;
+  transition: all 0.2s ease;
   line-height: 1;
+  user-select: none;
 }
 
 .btn-gps:hover {
-  background: rgba(59, 130, 246, 0.25);
+  background: rgba(59, 130, 246, 0.2);
   border-color: var(--accent);
-  box-shadow: 0 0 8px var(--accent-glow);
-  color: #FFFFFF;
+  color: #93C5FD;
+}
+
+.gps-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #64748B;
+  display: inline-block;
+  transition: all 0.2s ease;
 }
 
 .btn-gps.active-gps {
   background: rgba(16, 185, 129, 0.2);
   border-color: #10B981;
   color: #34D399;
-  box-shadow: 0 0 10px rgba(16, 185, 129, 0.35);
+  box-shadow: 0 0 12px rgba(16, 185, 129, 0.4);
+}
+
+.btn-gps.active-gps .gps-dot {
+  background: #10B981;
+  box-shadow: 0 0 8px #10B981;
+  animation: gpsPulse 1.8s infinite;
+}
+
+@keyframes gpsPulse {
+  0% { transform: scale(0.85); opacity: 0.8; }
+  50% { transform: scale(1.35); opacity: 1; }
+  100% { transform: scale(0.85); opacity: 0.8; }
 }
 
 /* Zone Dropdown (City-Wide Lahore Support) */
@@ -1098,20 +1119,27 @@ pre.code-display {
 
 /* Light theme overrides for City-Wide Lahore components */
 [data-theme="light"] .btn-gps {
-  background: rgba(37, 99, 235, 0.08);
-  border-color: rgba(37, 99, 235, 0.25);
-  color: #1D4ED8;
+  background: #F1F5F9;
+  border-color: rgba(15, 23, 42, 0.15);
+  color: #64748B;
 }
 [data-theme="light"] .btn-gps:hover {
-  background: rgba(37, 99, 235, 0.16);
+  background: rgba(37, 99, 235, 0.12);
   border-color: #2563EB;
-  color: #1E40AF;
+  color: #1D4ED8;
+}
+[data-theme="light"] .gps-dot {
+  background: #94A3B8;
 }
 [data-theme="light"] .btn-gps.active-gps {
-  background: rgba(16, 185, 129, 0.12);
+  background: rgba(16, 185, 129, 0.15);
   border-color: #059669;
   color: #047857;
   box-shadow: 0 0 8px rgba(16, 185, 129, 0.25);
+}
+[data-theme="light"] .btn-gps.active-gps .gps-dot {
+  background: #059669;
+  box-shadow: 0 0 6px #059669;
 }
 [data-theme="light"] .zone-dropdown {
   background: #FFFFFF;
