@@ -1,135 +1,132 @@
-# Contributing to MLH-Hacktoberfest 🎃
+# Contributing to SmogShield-LHR 🌫️🛡️
 
-Thank you for taking the time to contribute! 🎉 Contributions of all kinds are welcomed and appreciated—whether you're fixing bugs, adding new features, improving documentation, or helping review pull requests.
+Thank you for your interest in contributing to **SmogShield-LHR**! We welcome contributions that help improve air quality awareness, exposure modeling, responsive user experience, and accessible health guidance for the citizens of Lahore.
 
 ---
 
 ## 📑 Table of Contents
 
 - [Code of Conduct](#-code-of-conduct)
-- [Hacktoberfest Guidelines](#-hacktoberfest-guidelines)
+- [Hackathon & Model Compliance Rules](#-hackathon--model-compliance-rules)
+- [Development Setup](#-development-setup)
 - [How Can I Contribute?](#-how-can-i-contribute)
   - [Reporting Bugs](#reporting-bugs)
   - [Suggesting Features](#suggesting-features)
-  - [Making a Pull Request](#making-a-pull-request)
-- [Development Workflow](#-development-workflow)
-- [Commit Message Conventions](#-commit-message-conventions)
-- [PR Review Process](#-pr-review-process)
+  - [Submitting a Pull Request](#submitting-a-pull-request)
+- [Commit Conventions](#-commit-conventions)
+- [Review Checklist](#-review-checklist)
 
 ---
 
 ## 📜 Code of Conduct
 
-This project and everyone participating in it is governed by the [Code of Conduct](CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code.
+All contributors and maintainers are expected to abide by our [Code of Conduct](CODE_OF_CONDUCT.md). Please ensure respectful and welcoming interactions across issues, PRs, and discussions.
 
 ---
 
-## 🎃 Hacktoberfest Guidelines
+## 🚨 Hackathon & Model Compliance Rules
 
-Hacktoberfest encourages meaningful open-source contributions. To ensure quality and prevent spam:
+Because this project is built for Hacktoberfest Lahore 2026 under strict open-weight hackathon guardrails, every contribution **must** adhere to the following non-negotiable rules:
 
-- **Quality over Quantity:** Low-effort or spam pull requests (e.g., fixing minor typos in READMEs without substance, reordering lines without purpose) will be tagged as `spam` or `invalid` and will not count towards Hacktoberfest.
-- **Find or Open an Issue:** Before submitting a PR, make sure there is an open issue for it, or create one and discuss it.
-- **Wait for Assignment:** Please wait until a maintainer assigns the issue to you before working on it.
+1. **Strict 8B Model Limitation:**  
+   Runtime LLM logic (`app/api/smog/route.ts`) must exclusively invoke `llama-3.1-8b-instant` via the Groq Cloud API. Do **not** import, install, or call OpenAI, Anthropic Claude, Google Gemini, or any model with >8B parameters.
+2. **Deterministic Safety Calculations:**  
+   Risk bands (`GOOD` through `HAZARDOUS`), WHO safety multiples, Berkeley Earth cigarette equivalence, and safe commute hours are calculated deterministically in code (`lib/calc.ts`). The LLM must **never** be permitted to compute arithmetic or decide health risk severity.
+3. **Secret Isolation:**  
+   `GROQ_API_KEY` is loaded purely server-side. Never expose it in client code, public assets, or committed files (`.env`, `.env.local` must remain in `.gitignore`).
+4. **Single-Viewport Flow:**  
+   The application operates as a single-viewport dashboard (`app/page.tsx`). Do not add multi-page routing, authentication layers, or external database setups.
+
+---
+
+## 🛠️ Development Setup
+
+1. **Fork and clone the repository:**
+   ```bash
+   git clone https://github.com/<your-username>/MLH-Hacktoberfest.git
+   cd MLH-Hacktoberfest
+   ```
+
+2. **Set up upstream remote:**
+   ```bash
+   git remote add upstream https://github.com/ahmmikun/MLH-Hacktoberfest.git
+   ```
+
+3. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+
+4. **Configure environment:**
+   ```bash
+   cp .env.example .env.local
+   ```
+   Add a valid Groq API key:
+   ```env
+   GROQ_API_KEY=gsk_your_key_here
+   ```
+
+5. **Start development server:**
+   ```bash
+   npm run dev
+   ```
+
+6. **Run tests:**
+   ```bash
+   npm test
+   ```
 
 ---
 
 ## 💡 How Can I Contribute?
 
 ### Reporting Bugs
-
-Before creating bug reports, please check the existing issues to see if the problem has already been reported.
-
-When creating an issue, please use the **Bug Report Template** and include:
-- A clear, descriptive title.
-- Steps to reproduce the behavior.
-- Expected vs actual behavior.
-- Screenshots or error logs if applicable.
+- Search existing issues to confirm the bug hasn't already been reported.
+- Use the **[Bug Report Template](.github/ISSUE_TEMPLATE/bug_report.md)** to provide exact steps to reproduce, the selected zone/mode, and expected vs. actual outcomes.
 
 ### Suggesting Features
+- Review the [Requirements Document (docs/requirements.md)](docs/requirements.md) and [Design Document (docs/design.md)](docs/design.md) to understand current scope.
+- Use the **[Feature Request Template](.github/ISSUE_TEMPLATE/feature_request.md)** to explain the problem and proposed enhancement within project constraints.
 
-Feature requests are welcome! Use the **Feature Request Template** to describe:
-- The problem you are trying to solve.
-- Your proposed solution or enhancement.
-- Any alternative solutions considered.
+### Submitting a Pull Request
+1. Create a descriptive feature branch:
+   ```bash
+   git checkout -b feat/add-safe-window-marker
+   ```
+2. Write clean, accessible code conforming to the UI design tokens and WCAG 2.1 AA standards.
+3. Add unit tests for any new deterministic calculation or utility in `tests/`.
+4. Ensure all tests pass:
+   ```bash
+   npm test
+   ```
+5. Commit using Conventional Commits and push to your fork:
+   ```bash
+   git push origin feat/add-safe-window-marker
+   ```
+6. Open a Pull Request using our standard [PR Template](.github/PULL_REQUEST_TEMPLATE.md).
 
 ---
 
-## 🛠️ Development Workflow
+## 📝 Commit Conventions
 
-1. **Fork the Repository:**
-   Click the **Fork** button on GitHub to create your own copy of the repo.
+We follow [Conventional Commits](https://www.conventionalcommits.org/):
 
-2. **Clone the Forked Repository:**
-   ```bash
-   git clone https://github.com/<your-username>/MLH-Hacktoberfest.git
-   cd MLH-Hacktoberfest
-   ```
-
-3. **Set Up Upstream Remote:**
-   ```bash
-   git remote add upstream https://github.com/ahmmikun/MLH-Hacktoberfest.git
-   ```
-
-4. **Create a New Branch:**
-   Always create a new branch for your work:
-   ```bash
-   git checkout -b feature/your-feature-name
-   # or
-   git checkout -b fix/your-bug-fix
-   ```
-
-5. **Make Your Changes:**
-   Write clean, readable code and test your changes thoroughly.
-
-6. **Commit Your Changes:**
-   Follow our [Commit Message Conventions](#-commit-message-conventions).
-   ```bash
-   git add .
-   git commit -m "feat: add user profile card component"
-   ```
-
-7. **Keep Your Branch Updated:**
-   ```bash
-   git fetch upstream
-   git rebase upstream/main
-   ```
-
-8. **Push to Your Fork:**
-   ```bash
-   git push origin feature/your-feature-name
-   ```
-
-9. **Submit a Pull Request (PR):**
-   Open a PR against the `main` branch of this repository using our PR template.
+| Prefix | Scope | Example |
+| :--- | :--- | :--- |
+| `feat` | New feature or capability | `feat(calc): support custom particulate weight` |
+| `fix` | Bug fix | `fix(groq): normalize multi-asterisk bolding` |
+| `docs` | Documentation update | `docs(readme): add testing matrix findings` |
+| `test` | Unit or integration test | `test(calc): verify cigarette conversion boundaries` |
+| `refactor` | Code refactoring without behavior change | `refactor(ui): extract hero telemetry card` |
+| `style` | Formatting and styling | `style: improve contrast on dark mode chip` |
 
 ---
 
-## 📝 Commit Message Conventions
+## ✅ Review Checklist
 
-We recommend following [Conventional Commits](https://www.conventionalcommits.org/):
-
-| Type | Description |
-| :--- | :--- |
-| `feat` | A new feature |
-| `fix` | A bug fix |
-| `docs` | Documentation changes only |
-| `style` | Formatting, missing semi-colons, etc. (no functional code change) |
-| `refactor` | Refactoring code without changing its behavior |
-| `test` | Adding or updating tests |
-| `chore` | Maintenance tasks, tooling updates, dependencies |
-
-**Example:**
-```bash
-git commit -m "feat(ui): add responsive navigation bar"
-```
-
----
-
-## 🔍 PR Review Process
-
-- Maintainers will review your pull request as soon as possible.
-- Please respond constructively to review comments or requested changes.
-- Once approved, a maintainer will merge your PR!
-
-Thank you for contributing to open source! 🚀
+Before your PR can be merged, maintainers will verify:
+- [ ] Strictly adheres to `llama-3.1-8b-instant` on Groq.
+- [ ] No API keys, tokens, or credentials committed or leaked to client bundle.
+- [ ] Deterministic calculations verified against specifications.
+- [ ] Full test suite passes without regressions (`npm test`).
+- [ ] High-contrast, accessible UI (keyboard navigation, `aria-live` support).
