@@ -45,3 +45,6 @@ env/
 .idea/
 *.swp
 *.swo
+
+.vercel
+.env*

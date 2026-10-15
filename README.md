@@ -4,7 +4,7 @@
 *Hacktoberfest Lahore 2026 — Riphah International University*
 
 [![Hacktoberfest](https://img.shields.io/badge/Hacktoberfest-Lahore%202026-orange.svg)](https://hacktoberfest.com/)
-[![Model](https://img.shields.io/badge/Model-llama--3.1--8b--instant%20(8B)-blue.svg)](https://groq.com/)
+[![Model](https://img.shields.io/badge/Model-gpt--oss--20b%20%2B%20Gemini%20fallback-blue.svg)](https://groq.com/)
 [![Provider](https://img.shields.io/badge/AI%20Provider-Groq%20Cloud-f55036.svg)](https://groq.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
@@ -45,22 +45,28 @@ flowchart LR
 ```
 
 ### 🔒 Strict Hackathon Guardrails & Model Isolation
-- **Strict 8B Model Limitation:** Runtime AI logic strictly invokes `llama-3.1-8b-instant` (8 Billion parameters open-weight model) via Groq Cloud API.
-- **Zero Closed-Source Runtimes:** No OpenAI, Anthropic Claude, or Google Gemini/70B+ frontier models are imported or called.
+- **Model chain:** Groq `openai/gpt-oss-20b` (override with `GROQ_MODEL`), then Google `gemini-3.8-flash` if `GEMINI_API_KEY` is set and Groq fails. The header badge shows the model that actually answered.
+- **⚠️ Rule deviation:** gpt-oss-20b (20B) and Gemini (closed) exceed the hackathon's original "≤8B open-weight only" constraint (docs R1). This was a deliberate owner decision; set `GROQ_MODEL=llama-3.1-8b-instant` and leave `GEMINI_API_KEY` empty to return to strict compliance.
 - **Deterministic Risk Decoupling:** Risk severity bands (`GOOD` through `HAZARDOUS`) and exposure percentages are computed deterministically in code—the LLM is never permitted to guess medical risk or calculate arithmetic.
-- **Secret Isolation:** `GROQ_API_KEY` is loaded purely server-side. Zero client exposure.
+- **Secret Isolation:** `GROQ_API_KEY` is read only inside `lib/groq.ts` on the server. Verified: the key value does not appear anywhere in `.next/static`, and no `NEXT_PUBLIC_` variable exists.
 
 ---
 
 ## 3. Key Features & Deterministic Formulas
 
-### 📍 Micro-Zone Geolocation & Exposure Multipliers
-Pre-calibrated for 5 major Lahore meteorological zones:
+### 📍 Zones, Live Location & Exposure Multipliers
+The five core Lahore zones from the spec are one-click pills:
 1. **Johar Town / Riphah Campus** (`31.4697, 74.2728`)
 2. **Gulberg / Kalma Chowk** (`31.5204, 74.3587`)
 3. **Mall Road / Civil Lines** (`31.5580, 74.3292`)
 4. **DHA Phase 5** (`31.4720, 74.4110`)
 5. **Shahdara Industrial** (`31.6215, 74.2825`)
+
+Beyond the spec, the app also offers:
+- **12 more city-wide areas** (Model Town, Bahria, Cantt, Walled City, …), grouped by region in a "More areas" picker.
+- **"Use my location"** via the browser Geolocation API. Coordinates must fall inside greater Lahore, are rounded to ~100 m on the server, and are labelled "Live location near ‹nearest zone›".
+- **Light / dark theme toggle** in the header (remembered per browser, follows the OS by default).
+- **`GET /api/presets`**: a read-only JSON catalogue of presets, zones and modes.
 
 Transportation intake coefficients account for physiological breathing rate and protective enclosure:
 - **Motorbike / Yango / Bykea rider:** `1.8x` multiplier (heavy open-air particulate intake)
@@ -82,8 +88,11 @@ Transportation intake coefficients account for physiological breathing rate and 
 ## 4. Setup, Installation & Demo Presets
 
 ### Prerequisites
-- Node.js 18+ or 20+
-- A free [Groq Cloud API Key](https://console.groq.com/)
+- Node.js 20.9+ (developed on Node 24)
+- A [Groq Cloud API Key](https://console.groq.com/) with access to `llama-3.1-8b-instant`
+
+### Tech Stack
+Next.js 16 (App Router) + TypeScript, Tailwind CSS 4, framer-motion, lucide-react, zod, Vitest + Testing Library. All dependency versions are pinned exactly.
 
 ### Quickstart Guide
 
@@ -115,8 +124,24 @@ Transportation intake coefficients account for physiological breathing rate and 
 
 5. **Run test suite:**
    ```bash
-   npm test
+   npm test          # 140 Vitest tests; all network calls are mocked
+   npm run build     # production build
    ```
+
+6. **(Optional) Re-record the offline fallback sample:**
+   ```bash
+   npm run record:sample   # saves one real Open-Meteo response to lib/offlineSample.ts
+   ```
+
+### Project Structure
+```
+app/page.tsx              single-page dashboard (client)
+app/api/smog/route.ts     POST: validate → Open-Meteo → metrics → Groq 8B
+app/api/presets/route.ts  GET: presets, zones, modes
+lib/                      config, zones, presets, bands, calc, openMeteo, offlineSample, groq, schemas, exportRow
+components/               Header, ThemeToggle, PresetRibbon, ControlPanel, HeroCards, Histogram, InsightTabs, CopyButton
+tests/                    Vitest suites (unit, route, UI)
+```
 
 ### ⚡ One-Click Judge Demo Presets
 The dashboard includes 3 one-click preset buttons for evaluation:

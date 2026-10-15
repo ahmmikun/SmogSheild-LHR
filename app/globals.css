@@ -1,0 +1,36 @@
+@import "tailwindcss";
+
+/* Class-based dark mode so the header toggle (not only the OS) controls it. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme inline {
+  --font-sans: var(--font-inter), system-ui, -apple-system, sans-serif;
+  --font-mono: var(--font-jetbrains), "Courier New", monospace;
+}
+
+html {
+  color-scheme: light;
+}
+html.dark {
+  color-scheme: dark;
+}
+
+body {
+  @apply bg-slate-100 text-slate-900 antialiased dark:bg-[#090D16] dark:text-slate-100;
+  background-image:
+    radial-gradient(circle at 12% 10%, rgb(59 130 246 / 0.08) 0%, transparent 40%),
+    radial-gradient(circle at 88% 90%, rgb(244 63 94 / 0.05) 0%, transparent 40%);
+}
+
+/* Shared focus ring (design.md tokens). */
+.focus-ring {
+  @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-100 dark:focus-visible:ring-blue-400 dark:focus-visible:ring-offset-[#090D16];
+}
+
+/* R11.5: no pulse / shimmer when the user asks for reduced motion. */
+@media (prefers-reduced-motion: reduce) {
+  .animate-pulse,
+  .animate-spin {
+    animation: none !important;
+  }
+}
