@@ -1,12 +1,17 @@
 # MLH-Hacktoberfest 🎃
 
-Welcome to the **MLH-Hacktoberfest** repository! This project is prepared for Major League Hacking (MLH) and Hacktoberfest open-source contributions.
+[![Hacktoberfest](https://img.shields.io/badge/Hacktoberfest-2024-orange.svg)](https://hacktoberfest.com/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](CODE_OF_CONDUCT.md)
+
+Welcome to the **MLH-Hacktoberfest** repository! This project is prepared for Major League Hacking (MLH) community members and Hacktoberfest participants looking to make meaningful open-source contributions.
 
 ---
 
 ## 🌟 About Hacktoberfest
 
-[Hacktoberfest](https://hacktoberfest.com/) is an annual worldwide event during the month of October celebrating open-source software. Organizers encourage participants of all skill levels to get involved, contribute to open-source projects, and learn new skills.
+[Hacktoberfest](https://hacktoberfest.com/) is an annual worldwide celebration of open-source software presented by DigitalOcean in partnership with Major League Hacking (MLH) and GitHub. Organizers encourage participants of all skill levels to get involved, contribute to open-source projects, and learn new skills.
 
 ---
 
@@ -17,7 +22,7 @@ Welcome to the **MLH-Hacktoberfest** repository! This project is prepared for Ma
 - [Git](https://git-scm.com/) installed on your machine
 - A [GitHub](https://github.com/) account
 
-### Installation & Setup
+### Quick Setup
 
 1. **Fork the repository** (click the Fork button at the top right of this page).
 2. **Clone your fork**:
@@ -32,7 +37,7 @@ Welcome to the **MLH-Hacktoberfest** repository! This project is prepared for Ma
 4. **Make your changes and commit**:
    ```bash
    git add .
-   git commit -m "Add: your descriptive commit message"
+   git commit -m "feat: add your descriptive commit message"
    ```
 5. **Push to your fork and submit a Pull Request**:
    ```bash
@@ -41,11 +46,13 @@ Welcome to the **MLH-Hacktoberfest** repository! This project is prepared for Ma
 
 ---
 
-## 🤝 Contribution Guidelines
+## 🤝 Community & Guidelines
 
-- Follow best practices and write clean, readable code.
-- Provide descriptive pull request titles and descriptions.
-- Be respectful and adhere to open-source community standards.
+We strive to build a welcoming, inclusive, and collaborative environment. Please review the following community documents:
+
+- **[Contributing Guide (CONTRIBUTING.md)](CONTRIBUTING.md)**: Detailed instructions on workflow, issue picking, branch naming, and commit standards.
+- **[Code of Conduct (CODE_OF_CONDUCT.md)](CODE_OF_CONDUCT.md)**: Standards and expectations for community interaction.
+- **[Security Policy (SECURITY.md)](SECURITY.md)**: How to report any security vulnerabilities responsibly.
 
 ---
 
