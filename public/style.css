@@ -14,6 +14,15 @@
   --text-main: #F1F5F9;
   --text-muted: #94A3B8;
   --text-dim: #64748B;
+  --text-soft: #CBD5E1;
+
+  /* Semantic text tones (theme-aware) */
+  --text-accent: #93C5FD;
+  --text-success: #34D399;
+  --text-danger: #F87171;
+  --text-warn: #FB923C;
+
+  color-scheme: dark;
 
   /* EPA Semantic Band Colors */
   --band-good: #10B981;
@@ -902,3 +911,116 @@ pre.code-display {
     transition: none !important;
   }
 }
+
+
+/* ===== Theme Toggle Button ===== */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.theme-toggle {
+  background: var(--surface-solid);
+  color: var(--text-main);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-pill);
+  padding: 0.4rem 0.85rem;
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.theme-toggle:hover {
+  border-color: var(--accent);
+  background: var(--surface-hover);
+}
+
+.theme-toggle:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ===== Light Theme ===== */
+[data-theme="light"] {
+  --canvas: #F1F5F9;
+  --surface: rgba(255, 255, 255, 0.9);
+  --surface-solid: #FFFFFF;
+  --surface-hover: rgba(226, 232, 240, 0.9);
+  --border-subtle: rgba(37, 99, 235, 0.2);
+  --border-focus: rgba(37, 99, 235, 0.55);
+  --accent: #2563EB;
+  --accent-glow: rgba(37, 99, 235, 0.2);
+
+  --text-main: #0F172A;
+  --text-muted: #475569;
+  --text-dim: #64748B;
+  --text-soft: #334155;
+
+  --text-accent: #1D4ED8;
+  --text-success: #047857;
+  --text-danger: #B91C1C;
+  --text-warn: #C2410C;
+
+  color-scheme: light;
+}
+
+[data-theme="light"] body {
+  background-image:
+    radial-gradient(circle at 15% 15%, rgba(59, 130, 246, 0.08) 0%, transparent 40%),
+    radial-gradient(circle at 85% 85%, rgba(244, 63, 94, 0.05) 0%, transparent 40%);
+}
+
+/* Surfaces that were hardcoded dark */
+[data-theme="light"] .compliance-badge,
+[data-theme="light"] .zone-pill label,
+[data-theme="light"] .mode-card label,
+[data-theme="light"] .hours-display-box,
+[data-theme="light"] textarea.routine-input {
+  background: var(--surface-solid);
+}
+
+[data-theme="light"] .preset-ribbon { background: rgba(255, 255, 255, 0.7); }
+[data-theme="light"] .histogram-container { background: #F8FAFC; border-color: rgba(15, 23, 42, 0.08); }
+[data-theme="light"] .preset-btn:hover { background: rgba(219, 234, 254, 0.9); }
+[data-theme="light"] .preset-btn.edge-case:hover { background: rgba(254, 243, 199, 0.9); }
+[data-theme="light"] .mode-multiplier { background: rgba(15, 23, 42, 0.08); }
+[data-theme="light"] input[type="range"] { background: rgba(15, 23, 42, 0.12); }
+[data-theme="light"] .gauge-bar-wrapper { background: rgba(15, 23, 42, 0.08); }
+[data-theme="light"] .secondary-metrics { border-top-color: rgba(15, 23, 42, 0.08); }
+[data-theme="light"] .tab-btn:hover { background: rgba(15, 23, 42, 0.05); }
+[data-theme="light"] .schedule-table th { border-bottom-color: rgba(15, 23, 42, 0.12); }
+[data-theme="light"] .schedule-table td { border-bottom-color: rgba(15, 23, 42, 0.06); }
+[data-theme="light"] .hist-bar.null-bar { border-color: rgba(15, 23, 42, 0.25); }
+[data-theme="light"] .hist-tooltip { background: #FFFFFF; box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15); }
+[data-theme="light"] pre.code-display { background: #F8FAFC; color: #1E293B; }
+[data-theme="light"] .btn-copy { background: #FFFFFF; }
+
+/* Accent text tones */
+[data-theme="light"] .compliance-badge span.accent,
+[data-theme="light"] .hours-display-box,
+[data-theme="light"] .zone-pill input[type="radio"]:checked + label,
+[data-theme="light"] .tab-btn.active { color: var(--text-accent); }
+[data-theme="light"] .zone-pill input[type="radio"]:checked + label,
+[data-theme="light"] .mode-card input[type="radio"]:checked + label { background: rgba(37, 99, 235, 0.1); }
+[data-theme="light"] .preset-pill-tag { background: rgba(37, 99, 235, 0.12); color: #1D4ED8; }
+[data-theme="light"] .preset-btn.edge-case .preset-pill-tag { background: rgba(245, 158, 11, 0.18); color: #92400E; }
+
+/* Readable band / status colors on light backgrounds */
+[data-theme="light"] .band-good { color: #047857; }
+[data-theme="light"] .band-moderate { color: #854D0E; }
+[data-theme="light"] .band-usg { color: #C2410C; }
+[data-theme="light"] .band-unhealthy { color: #B91C1C; }
+[data-theme="light"] .band-very-unhealthy { color: #7E22CE; }
+[data-theme="light"] .band-hazardous { color: #BE123C; }
+[data-theme="light"] .offline-badge { color: #B91C1C; }
+[data-theme="light"] .safe-slot-pill,
+[data-theme="light"] .reduction-chip { color: #047857; }
+[data-theme="light"] .spikes-muted-row,
+[data-theme="light"] .field-error { color: #B91C1C; }

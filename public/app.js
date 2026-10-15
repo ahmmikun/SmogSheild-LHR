@@ -23,6 +23,34 @@ function aqiToBand(aqi) {
 let isRunning = false;
 let currentScenario = "Manual Simulation";
 
+// Theme Toggle (light / dark), persisted in localStorage
+const THEME_STORAGE_KEY = "smogshield-theme";
+const btnThemeToggle = document.getElementById("btnThemeToggle");
+const themeToggleIcon = document.getElementById("themeToggleIcon");
+const themeToggleText = document.getElementById("themeToggleText");
+
+function applyTheme(theme) {
+  const isLight = theme === "light";
+  document.documentElement.setAttribute("data-theme", isLight ? "light" : "dark");
+  // Button shows the theme it will switch TO
+  themeToggleIcon.textContent = isLight ? "🌙" : "☀️";
+  themeToggleText.textContent = isLight ? "Dark" : "Light";
+  btnThemeToggle.setAttribute("aria-label", isLight ? "Switch to dark theme" : "Switch to light theme");
+}
+
+if (btnThemeToggle) {
+  applyTheme(document.documentElement.getAttribute("data-theme"));
+  btnThemeToggle.addEventListener("click", () => {
+    const next = document.documentElement.getAttribute("data-theme") === "light" ? "dark" : "light";
+    applyTheme(next);
+    try {
+      localStorage.setItem(THEME_STORAGE_KEY, next);
+    } catch (e) {
+      // Storage unavailable (private mode); theme still applies for this session
+    }
+  });
+}
+
 // DOM Elements
 const inputHours = document.getElementById("inputHours");
 const hoursDisplay = document.getElementById("hoursDisplay");
@@ -250,9 +278,9 @@ function renderResults(data, requestInput) {
         const tr = document.createElement("tr");
         tr.innerHTML = `
           <td><strong class="mono">${plan.originalSlot}</strong></td>
-          <td><strong class="mono" style="color: #34D399;">${plan.optimizedSlot}</strong></td>
+          <td><strong class="mono" style="color: var(--text-success);">${plan.optimizedSlot}</strong></td>
           <td><span class="reductionChip mono">−${plan.reductionPercent}%</span></td>
-          <td style="color: #94A3B8;">${plan.reason}</td>
+          <td style="color: var(--text-muted);">${plan.reason}</td>
         `;
         scheduleTableBody.appendChild(tr);
       });
