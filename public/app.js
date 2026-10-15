@@ -282,7 +282,24 @@ async function runAnalysis(scenarioName = "Manual Simulation") {
 
     if (!res.ok) {
       const errData = await res.json().catch(() => ({}));
-      throw new Error(errData.error || `HTTP error ${res.status}`);
+      if (errData.fieldErrors) {
+        if (errData.fieldErrors.zone && document.getElementById("errorZone")) {
+          document.getElementById("errorZone").textContent = errData.fieldErrors.zone.join(", ");
+        }
+        if (errData.fieldErrors.hoursOutside && document.getElementById("errorHours")) {
+          document.getElementById("errorHours").textContent = errData.fieldErrors.hoursOutside.join(", ");
+          document.getElementById("errorHours").classList.add("active");
+        }
+        if (errData.fieldErrors.userRoutine && document.getElementById("errorRoutine")) {
+          document.getElementById("errorRoutine").textContent = errData.fieldErrors.userRoutine.join(", ");
+          document.getElementById("errorRoutine").classList.add("active");
+        }
+        const errorDetails = Object.entries(errData.fieldErrors)
+          .map(([k, v]) => `${k}: ${v.join(", ")}`)
+          .join(" | ");
+        throw new Error(errorDetails || errData.error || "Validation failed");
+      }
+      throw new Error(errData.message || errData.error || `HTTP error ${res.status}`);
     }
 
     const data = await res.json();
